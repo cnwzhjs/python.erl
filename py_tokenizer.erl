@@ -56,7 +56,7 @@ tokenize_one([$=, $= | Rest], {Filename, Line, Column})->
 tokenize_one([C | Rest], {Filename, Line, Column})
     when (C == $:) or (C == $=) or (C == $+) or (C == $-) or (C == $*) or (C == $/) or (C == $\\)
          or (C == $() or (C == $)) or (C == $.) or (C == $,) or (C == $[) or (C == $]) or (C == ${)
-         or (C == $}) or (C == $>) or (C == $<) or (C == $@) or (C == $%)
+         or (C == $}) or (C == $>) or (C == $<) or (C == $@) or (C == $%) or (C == $;)
     -> {{punctuation, {Filename, Line, Column}, C}, Rest, {Filename, Line, Column+1}};
 % the rest
 tokenize_one([C | Rest], {Filename, Line, Column}) ->
