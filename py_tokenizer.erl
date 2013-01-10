@@ -138,6 +138,7 @@ symbol_type(Symbol) ->
         "and"->keyword;
         "or"->keyword;
         "not"->keyword;
+        "as"->keyword;
         _->symbol
     end.
 

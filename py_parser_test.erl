@@ -50,6 +50,24 @@ parse_from_qualified_name_import_name_list_test() ->
         [{import_from, {"Unnamed", 1, 1}, ["ui", "ogml"], ["OgmlLoader", "PropertyRef"]}]
     }, []}, Ast).
 
+parse_import_as_test() ->
+    Code = "import game.consts as C",
+    Ast = py_parser:parse(py_preprocessor:preprocess(py_tokenizer:tokenize(Code, {"Unnamed", 1, 1}))),
+    ?assertMatch({ok, {
+        statement_block,
+        {"Unnamed", 1, 1},
+        [{import_as, {"Unnamed", 1, 1}, ["game", "consts"], "C"}]
+    }, []}, Ast).
+
+parse_from_import_as_test() ->
+    Code = "from game import consts as C",
+    Ast = py_parser:parse(py_preprocessor:preprocess(py_tokenizer:tokenize(Code, {"Unnamed", 1, 1}))),
+    ?assertMatch({ok, {
+        statement_block,
+        {"Unnamed", 1, 1},
+        [{import_from_as, {"Unnamed", 1, 1}, ["game"], "consts", "C"}]
+    }, []}, Ast).
+
 parse_multi_line_imports_test() ->
     Code = "import ui.ogml\r\nimport graphics\r\nimport platform\r\nfrom ui.ogml import OgmlLoader",
     Ast = py_parser:parse(py_preprocessor:preprocess(py_tokenizer:tokenize(Code, {"Unnamed", 1, 1}))),

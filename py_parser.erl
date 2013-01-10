@@ -5,9 +5,8 @@
 begin_with(_Any, []) -> true;
 begin_with([A | ARest], [A | BRest]) -> begin_with(ARest, BRest).
 
-get_position({_, Position}) -> Position;
-get_position({_, Position, _}) -> Position;
-get_position({_, Position, _, _}) -> Position.
+get_position(TokenOrStatement) ->
+    lists:nth(2, tuple_to_list(TokenOrStatement)).
 
 indicate_position(na, []) ->
     na;
@@ -78,6 +77,18 @@ do_parse_statement([{keyword, ImportPosition, "import"} | Rest]) ->
     case parse_qualified_name_list(Rest) of
         {ok, Names, _, [{new_line, _} | NewRest]} ->
             {ok, {import, ImportPosition, Names}, NewRest};
+        {ok, Names, _, [{keyword, AsPosition, "as"}, {symbol, AsSymbolPosition, AsName} | NewRest]} ->
+            case Names of
+                [Name] ->
+                    case NewRest of
+                        [{new_line, _} | RestAfterNewLine] ->
+                            {ok, {import_as, ImportPosition, Name, AsName}, RestAfterNewLine};
+                        [Token | RestAfterIllegalToken] ->
+                            {error, [{error, get_position(Token), unexpected_token, Token}], RestAfterIllegalToken}
+                    end;
+                _ ->
+                    {error, [{error, AsPosition, unexpected_token, {keyword, AsPosition, "as"}}], [{symbol, AsSymbolPosition, AsName} | NewRest]}
+            end;
         {ok, _, _, [Token | NewRest]} ->
             {error, [{error, get_position(Token), unexpected_token, Token}], NewRest};
         Error ->
@@ -89,6 +100,8 @@ do_parse_statement([{keyword, FromPosition, "from"} | Rest]) ->
             {ok, {import_from_all, FromPosition, Name}, NewRest};
         {ok, Name, _, [{keyword, _, "import"} | NewRest]} ->
             case parse_name_list(NewRest) of
+                {ok, [ImportName], _, [{keyword, _, "as"}, {symbol, _, AsName}, {new_line, _} | NewRestAfterImport]} ->
+                    {ok, {import_from_as, FromPosition, Name, ImportName, AsName}, NewRestAfterImport};
                 {ok, Names, _, [{new_line, _} | NewRestAfterImport]} ->
                     {ok, {import_from, FromPosition, Name, Names}, NewRestAfterImport};
                 {ok, _, _, [Token | NewRestAfterImport]} ->
