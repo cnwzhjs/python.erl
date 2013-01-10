@@ -33,14 +33,6 @@ tokenize_string_single_test() ->
     Tokens = py_tokenizer:tokenize("\'Hello, \\nworld\'", {"Unnamed", 1, 1}),
     ?assertMatch([{string, {"Unnamed", 1, 1}, "Hello, \nworld"}], Tokens).
 
-content_scripts_const_test() ->
-    Filename="F:\\projects\\work\\tankstory.new\\client\\content\\scripts\\const.py",
-    test_file(Filename, "const.py").
-
-content_scripts_battle_test() ->
-    Filename="F:\\projects\\work\\tankstory.new\\client\\content\\scripts\\controls\\s_battle.py",
-    test_file(Filename, "s_battle.py").
-
-oge_lib_element_tree_test() ->
-    Filename="F:\\projects\\work\\tankstory.new\\client\\oge\\lib\\elementtree\\ElementTree.py",
-    test_file(Filename, "ElementTree.py").
+%content_scripts_const_test() ->
+%    Filename="test/const.py",
+%    test_file(Filename, "const.py").
