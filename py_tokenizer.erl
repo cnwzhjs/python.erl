@@ -128,6 +128,16 @@ symbol_type(Symbol) ->
         "end"->keyword;
         "import"->keyword;
         "pass"->keyword;
+		"global"->keyword;
+        "from"->keyword;
+        "for"->keyword;
+        "in"->keyword;
+        "if"->keyword;
+        "else"->keyword;
+        "elif"->keyword;
+        "and"->keyword;
+        "or"->keyword;
+        "not"->keyword;
         _->symbol
     end.
 
